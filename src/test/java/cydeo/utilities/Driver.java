@@ -78,12 +78,23 @@ public class Driver {
                         e.printStackTrace();
                     }
                     break;
-                case "chrome":
+                    case "chrome":
+                        ChromeOptions options = new ChromeOptions();
+                        options.setBinary("/usr/lib/chromium-browser/chromium-browser"); // Default Chromium path on Ubuntu
+                        options.addArguments("--headless"); // Enable headless mode for Jenkins
+                        options.addArguments("--no-sandbox"); // Bypass sandboxing issues in CI
+                        options.addArguments("--disable-dev-shm-usage"); // Avoid shared memory issues
                     //WebDriverManager.chromedriver().setup();
                     driverPool.set(new ChromeDriver());
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
+                /*case "chrome":
+                    //WebDriverManager.chromedriver().setup();
+                    driverPool.set(new ChromeDriver());
+                    driverPool.get().manage().window().maximize();
+                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+                    break;*/
                 case "firefox":
                     //WebDriverManager.firefoxdriver().setup();
                     driverPool.set(new FirefoxDriver());
