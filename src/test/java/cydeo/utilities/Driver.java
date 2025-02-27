@@ -57,7 +57,7 @@ public class Driver {
                         URL url = new URL("http://"+ gridAddress + ":4444/wd/hub");
                         ChromeOptions chromeOptions = new ChromeOptions();
                         chromeOptions.addArguments("--start-maximized");
-                        chromeOptions.setBinary("/usr/lib/chromium-browser/chromium-browser"); // Default Chromium path on Ubuntu
+                        chromeOptions.setBinary("/usr/bin/chromedriver"); // Default Chromium path on Ubuntu
                         chromeOptions.addArguments("--headless"); // Enable headless mode for Jenkins
                         chromeOptions.addArguments("--no-sandbox"); // Bypass sandboxing issues in CI
                         chromeOptions.addArguments("--disable-dev-shm-usage"); // Avoid shared memory issues
@@ -84,7 +84,7 @@ public class Driver {
                     break;
                     case "chrome":
                         ChromeOptions options = new ChromeOptions();
-                        options.setBinary("/usr/lib/chromium-browser/chromium-browser"); // Default Chromium path on Ubuntu
+                        options.setBinary("/usr/bin/chromedriver"); // Default Chromium path on Ubuntu
                         options.addArguments("--headless"); // Enable headless mode for Jenkins
                         options.addArguments("--no-sandbox"); // Bypass sandboxing issues in CI
                         options.addArguments("--disable-dev-shm-usage"); // Avoid shared memory issues
