@@ -57,10 +57,6 @@ public class Driver {
                         URL url = new URL("http://"+ gridAddress + ":4444/wd/hub");
                         ChromeOptions chromeOptions = new ChromeOptions();
                         chromeOptions.addArguments("--start-maximized");
-                        chromeOptions.setBinary("/usr/bin/chromedriver"); // Default Chromium path on Ubuntu
-                        chromeOptions.addArguments("--headless"); // Enable headless mode for Jenkins
-                        chromeOptions.addArguments("--no-sandbox"); // Bypass sandboxing issues in CI
-                        chromeOptions.addArguments("--disable-dev-shm-usage"); // Avoid shared memory issues
                         driverPool.set(new RemoteWebDriver(url, chromeOptions));
                         //driverPool.set(new RemoteWebDriver(new URL("http://0.0.0.0:4444/wd/hub"),desiredCapabilities));
 
@@ -82,23 +78,12 @@ public class Driver {
                         e.printStackTrace();
                     }
                     break;
-                    case "chrome":
-                        ChromeOptions options = new ChromeOptions();
-                        options.setBinary("/usr/bin/chromedriver"); // Default Chromium path on Ubuntu
-                        options.addArguments("--headless"); // Enable headless mode for Jenkins
-                        options.addArguments("--no-sandbox"); // Bypass sandboxing issues in CI
-                        options.addArguments("--disable-dev-shm-usage"); // Avoid shared memory issues
+                case "chrome":
                     //WebDriverManager.chromedriver().setup();
                     driverPool.set(new ChromeDriver());
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
-                /*case "chrome":
-                    //WebDriverManager.chromedriver().setup();
-                    driverPool.set(new ChromeDriver());
-                    driverPool.get().manage().window().maximize();
-                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-                    break;*/
                 case "firefox":
                     //WebDriverManager.firefoxdriver().setup();
                     driverPool.set(new FirefoxDriver());
