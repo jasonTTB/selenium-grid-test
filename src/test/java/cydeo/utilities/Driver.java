@@ -29,8 +29,8 @@ public class Driver {
                         driverPool.set(new ChromeDriver());
                         break;
                     case "firefox":
-                        String geckoDriverPath = "/usr/local/bin/geckodriver";
-                        String firefoxBinaryPath = "/usr/bin/firefox-esr";
+                        String geckoDriverPath = "/snap/bin/geckodriver";
+                        String firefoxBinaryPath = "/usr/bin/firefox";
 
                         System.setProperty("webdriver.gecko.driver", geckoDriverPath);
                         System.setProperty("webdriver.firefox.bin", firefoxBinaryPath);
