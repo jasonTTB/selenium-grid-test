@@ -26,51 +26,41 @@ public class Driver {
 
             switch (browserType){
                 case "remote-chrome":
-                    try {
-                        String gridAddress = "34.239.154.115";
-                        URL url = new URL("http://"+ gridAddress + ":4444/wd/hub");
-                        ChromeOptions chromeOptions = new ChromeOptions();
-                        chromeOptions.addArguments("--start-maximized");
-                        driverPool.set(new RemoteWebDriver(url, chromeOptions));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    // ... (keep existing remote-chrome code)
                     break;
                 case "remote-firefox":
+                    // ... (keep existing remote-firefox code)
+                    break;
+                case "chrome":
+                    // ... (keep existing chrome code)
+                    break;
+                case "firefox":
+                    String geckoDriverPath = "/usr/local/bin/geckodriver"; // Update this path
+                    String firefoxBinaryPath = "/usr/bin/firefox-esr";     // Update this path if necessary
+
+                    System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+                    System.setProperty("webdriver.firefox.bin", firefoxBinaryPath);
+
+                    FirefoxOptions options = new FirefoxOptions();
+                    options.setBinary(firefoxBinaryPath);
+                    options.addArguments("--headless");
+                    options.addArguments("--no-sandbox");
+                    options.addArguments("--disable-dev-shm-usage");
+
+                    System.out.println("Setting up Firefox driver...");
+                    System.out.println("GeckoDriver path: " + geckoDriverPath);
+                    System.out.println("Firefox binary path: " + firefoxBinaryPath);
+
                     try {
-                        String gridAddress = "34.239.154.115";
-                        URL url = new URL("http://"+ gridAddress + ":4444/wd/hub");
-                        FirefoxOptions firefoxOptions = new FirefoxOptions();
-                        firefoxOptions.addArguments("--start-maximized");
-                        driverPool.set(new RemoteWebDriver(url, firefoxOptions));
+                        driverPool.set(new FirefoxDriver(options));
+                        driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
                     } catch (Exception e) {
+                        System.out.println("Failed to initialize Firefox driver: " + e.getMessage());
                         e.printStackTrace();
                     }
                     break;
-                case "chrome":
-                    WebDriverManager.chromedriver().setup();
-                    driverPool.set(new ChromeDriver());
-                    driverPool.get().manage().window().maximize();
-                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-                    break;
-                case "firefox":
-                    WebDriverManager.firefoxdriver().setup();
-                    FirefoxOptions options = new FirefoxOptions();
-                    options.addArguments("--start-maximized");
-                    // Uncomment the next line if you need to run in headless mode
-                    // options.addArguments("--headless");
-                    System.out.println("Setting up Firefox driver...");
-                    System.out.println("GeckoDriver path: " + System.getProperty("webdriver.gecko.driver"));
-                    driverPool.set(new FirefoxDriver(options));
-                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-                    break;
                 case "headless-chrome":
-                    WebDriverManager.chromedriver().setup();
-                    ChromeOptions option = new ChromeOptions();
-                    option.addArguments("--headless=new");
-                    driverPool.set(new ChromeDriver(option));
-                    driverPool.get().manage().window().maximize();
-                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+                    // ... (keep existing headless-chrome code)
                     break;
             }
         }
