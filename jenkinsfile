@@ -1,25 +1,39 @@
-node {
-    stage('Clone code') {
-        git 'https://github.com/Cydeo-SD-US030/selenium-grid-demo'
-    }
+pipeline {
+    agent any
 
-    stage('Run tests'){
-        if(isUnix()){
-            sh "mvn clean test"
-        } else {
-            bat "mvn clean test -Dcucumber.filter.tags=@regression"
+    stages {
+        stage('Clone code') {
+            steps {
+                git 'https://github.com/Cydeo-SD-US030/selenium-grid-demo'
+            }
         }
 
-    }
+        stage('Run tests') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh "mvn clean test -DBROWSER=${env.BROWSER}"
+                    } else {
+                        bat "mvn clean test -DBROWSER=${env.BROWSER} -Dcucumber.filter.tags=@regression"
+                    }
+                }
+            }
+        }
 
-    stage('Generate report'){
-           cucumber failedFeaturesNumber: -1,
-            failedScenariosNumber: -1,
-            failedStepsNumber: -1,
-            fileIncludePattern: '**/*.json',
-            pendingStepsNumber: -1,
-            skippedStepsNumber: -1,
-            sortingMethod: 'ALPHABETICAL',
-            undefinedStepsNumber: -1
+        stage('Generate report') {
+            steps {
+                cucumber failedFeaturesNumber: -1,
+                         failedScenariosNumber: -1,
+                         failedStepsNumber: -1,
+                         fileIncludePattern: '**/*.json',
+                         pendingStepsNumber: -1,
+                         skippedStepsNumber: -1,
+                         sortingMethod: 'ALPHABETICAL',
+                         undefinedStepsNumber: -1
+            }
+        }
+    }
+    environment {
+        BROWSER = "firefox"  // Default browser
     }
 }
