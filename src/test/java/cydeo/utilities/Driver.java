@@ -18,60 +18,65 @@ public class Driver {
     private static InheritableThreadLocal<WebDriver> driverPool = new InheritableThreadLocal<>();
 
     public static WebDriver getDriver(){
-
         if(driverPool.get() == null){
+            try {
+                String browserType = System.getProperty("BROWSER") != null ? System.getProperty("BROWSER") : ConfigurationReader.getProperty("browser");
+                System.out.println("Browser: " + browserType);
 
-            String browserType = System.getProperty("BROWSER") != null ? System.getProperty("BROWSER") : ConfigurationReader.getProperty("browser");
-            System.out.println("Browser: " + browserType);
+                switch (browserType){
+                    case "chrome":
+                        WebDriverManager.chromedriver().setup();
+                        driverPool.set(new ChromeDriver());
+                        break;
+                    case "firefox":
+                        String geckoDriverPath = "/usr/local/bin/geckodriver";
+                        String firefoxBinaryPath = "/usr/bin/firefox-esr";
 
-            switch (browserType){
-                case "remote-chrome":
-                    // ... (keep existing remote-chrome code)
-                    break;
-                case "remote-firefox":
-                    // ... (keep existing remote-firefox code)
-                    break;
-                case "chrome":
-                    // ... (keep existing chrome code)
-                    break;
-                case "firefox":
-                    String geckoDriverPath = "/usr/local/bin/geckodriver"; // Update this path
-                    String firefoxBinaryPath = "/usr/bin/firefox-esr";     // Update this path if necessary
+                        System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+                        System.setProperty("webdriver.firefox.bin", firefoxBinaryPath);
 
-                    System.setProperty("webdriver.gecko.driver", geckoDriverPath);
-                    System.setProperty("webdriver.firefox.bin", firefoxBinaryPath);
+                        FirefoxOptions options = new FirefoxOptions();
+                        options.setBinary(firefoxBinaryPath);
+                        options.addArguments("--headless");
+                        options.addArguments("--no-sandbox");
+                        options.addArguments("--disable-dev-shm-usage");
 
-                    FirefoxOptions options = new FirefoxOptions();
-                    options.setBinary(firefoxBinaryPath);
-                    options.addArguments("--headless");
-                    options.addArguments("--no-sandbox");
-                    options.addArguments("--disable-dev-shm-usage");
+                        System.out.println("Setting up Firefox driver...");
+                        System.out.println("GeckoDriver path: " + geckoDriverPath);
+                        System.out.println("Firefox binary path: " + firefoxBinaryPath);
 
-                    System.out.println("Setting up Firefox driver...");
-                    System.out.println("GeckoDriver path: " + geckoDriverPath);
-                    System.out.println("Firefox binary path: " + firefoxBinaryPath);
-
-                    try {
                         driverPool.set(new FirefoxDriver(options));
-                        driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
-                    } catch (Exception e) {
-                        System.out.println("Failed to initialize Firefox driver: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                    break;
-                case "headless-chrome":
-                    // ... (keep existing headless-chrome code)
-                    break;
+                        break;
+                    // Add other browser cases as needed
+                    default:
+                        throw new RuntimeException("Unsupported browser type: " + browserType);
+                }
+
+                WebDriver driver = driverPool.get();
+                driver.manage().window().maximize();
+                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+            } catch (Exception e) {
+                System.out.println("Failed to initialize WebDriver: " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
-        return driverPool.get();
+        WebDriver driver = driverPool.get();
+        if (driver == null) {
+            throw new RuntimeException("Driver was not initialized. Check previous logs for errors.");
+        }
+        return driver;
     }
 
     public static void closeDriver(){
-        if (driverPool.get()!=null){
-            driverPool.get().quit();
-            driverPool.remove();
+        if (driverPool.get() != null){
+            try {
+                driverPool.get().quit();
+            } catch (Exception e) {
+                System.out.println("Error while closing the driver: " + e.getMessage());
+            } finally {
+                driverPool.remove();
+            }
         }
     }
 }
