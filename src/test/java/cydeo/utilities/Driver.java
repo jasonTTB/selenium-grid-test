@@ -75,6 +75,7 @@ public class Driver {
                     FirefoxOptions firefoxOptions = new FirefoxOptions();
                     // Explicitly set the Firefox binary to the one inside the snap package
                     firefoxOptions.setBinary("/snap/firefox/current/usr/lib/firefox/firefox");
+
                     // Optionally adjust the log level if needed
                     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
                     firefoxOptions.addArguments("--start-maximized");
