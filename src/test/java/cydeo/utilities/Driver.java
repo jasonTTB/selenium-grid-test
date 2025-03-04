@@ -36,7 +36,7 @@ public class Driver {
             switch (browserType){
                 case "remote-chrome":
                     try {
-                        // assign your grid server address
+                        // Assign your grid server address
                         String gridAddress = "100.24.34.37";
                         URL url = new URL("http://" + gridAddress + ":4444/wd/hub");
                         ChromeOptions chromeOptions = new ChromeOptions();
@@ -49,7 +49,7 @@ public class Driver {
 
                 case "remote-firefox":
                     try {
-                        // assign your grid server address
+                        // Assign your grid server address
                         String gridAddress = "34.239.154.115";
                         URL url = new URL("http://" + gridAddress + ":4444/wd/hub");
                         FirefoxOptions remoteFirefoxOptions = new FirefoxOptions();
@@ -61,7 +61,9 @@ public class Driver {
                     break;
 
                 case "chrome":
-                    driverPool.set(new ChromeDriver());
+                    ChromeOptions chromeOptions = new ChromeOptions();
+                    chromeOptions.addArguments("--start-maximized");
+                    driverPool.set(new ChromeDriver(chromeOptions));
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
@@ -69,17 +71,21 @@ public class Driver {
                 case "firefox":
                     // Disable Selenium Manager on unsupported architectures (e.g., ARM64)
                     System.setProperty("SELENIUM_MANAGER_DISABLE", "true");
+
                     // Specify the path to the manually installed GeckoDriver for ARM64
                     System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
 
+                    // Initialize Firefox options
                     FirefoxOptions firefoxOptions = new FirefoxOptions();
-                    // Explicitly set the Firefox binary to the one inside the snap package
-                    firefoxOptions.setBinary("/snap/firefox/current/usr/lib/firefox/firefox");
+                    // Set the Firefox binary location (ensure Firefox is installed via the package manager)
+                    firefoxOptions.setBinary("/usr/bin/firefox");
 
-                    // Optionally adjust the log level if needed
+                    // Set log level to TRACE for detailed logs
                     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
+                    // Start Firefox maximized
                     firefoxOptions.addArguments("--start-maximized");
 
+                    // Initialize the Firefox driver
                     driverPool.set(new FirefoxDriver(firefoxOptions));
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
