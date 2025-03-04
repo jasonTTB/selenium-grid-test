@@ -25,16 +25,15 @@ public class Driver {
      */
     public static WebDriver getDriver() {
 
-        if (driverPool.get() == null) {
+        if(driverPool.get() == null){
 
-            // Read the browser type from system property or configuration
+            // Read the browserType from system property or configuration
             String browserType = (System.getProperty("BROWSER") == null)
                     ? ConfigurationReader.getProperty("browser")
                     : System.getProperty("BROWSER");
-
             System.out.println("Browser: " + browserType);
 
-            switch (browserType) {
+            switch (browserType){
                 case "remote-chrome":
                     try {
                         // assign your grid server address
@@ -53,9 +52,9 @@ public class Driver {
                         // assign your grid server address
                         String gridAddress = "34.239.154.115";
                         URL url = new URL("http://" + gridAddress + ":4444/wd/hub");
-                        FirefoxOptions firefoxOptions = new FirefoxOptions();
-                        firefoxOptions.addArguments("--start-maximized");
-                        driverPool.set(new RemoteWebDriver(url, firefoxOptions));
+                        FirefoxOptions remoteFirefoxOptions = new FirefoxOptions();
+                        remoteFirefoxOptions.addArguments("--start-maximized");
+                        driverPool.set(new RemoteWebDriver(url, remoteFirefoxOptions));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -68,12 +67,14 @@ public class Driver {
                     break;
 
                 case "firefox":
-                    // Disable Selenium Manager so that it doesn't try to fetch a non-ARM64 GeckoDriver
+                    // Disable Selenium Manager on unsupported architectures (e.g., ARM64)
                     System.setProperty("SELENIUM_MANAGER_DISABLE", "true");
                     // Specify the path to the manually installed GeckoDriver for ARM64
                     System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
 
                     FirefoxOptions firefoxOptions = new FirefoxOptions();
+                    // Explicitly set the Firefox binary to the one inside the snap package
+                    firefoxOptions.setBinary("/snap/firefox/current/firefox");
                     // Optionally adjust the log level if needed
                     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
                     firefoxOptions.addArguments("--start-maximized");
@@ -102,8 +103,8 @@ public class Driver {
     /*
      * Closes the driver instance and removes it from the thread-local storage.
      */
-    public static void closeDriver() {
-        if (driverPool.get() != null) {
+    public static void closeDriver(){
+        if (driverPool.get() != null){
             driverPool.get().quit();
             driverPool.remove();
         }
