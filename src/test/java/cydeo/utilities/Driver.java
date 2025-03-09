@@ -62,16 +62,30 @@ public class Driver {
 
                 case "chrome":
                     ChromeOptions chromeOptions = new ChromeOptions();
-                    chromeOptions.addArguments("--headless=new");  // Use "new" headless mode for better stability
+
+                    // Enable headless mode with better stability
+                    chromeOptions.addArguments("--headless=new");
+
+                    // Optimize performance and avoid sandbox issues
                     chromeOptions.addArguments("--disable-gpu");
                     chromeOptions.addArguments("--no-sandbox");
                     chromeOptions.addArguments("--disable-dev-shm-usage");
-                    chromeOptions.addArguments("--start-maximized");
 
+                    // Ensure proper screen rendering in headless mode
+                    chromeOptions.addArguments("--window-size=1920,1080");
+                    chromeOptions.addArguments("--force-device-scale-factor=1");
+                    chromeOptions.addArguments("--disable-blink-features=AutomationControlled");
+
+                    // Set the ChromeDriver with configured options
                     driverPool.set(new ChromeDriver(chromeOptions));
-                    driverPool.get().manage().window().maximize();
+
+                    // Set timeouts and ensure elements are visible before interaction
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+                    driverPool.get().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+                    driverPool.get().manage().timeouts().scriptTimeout(Duration.ofSeconds(30));
+
                     break;
+
 
 
                 case "firefox":
