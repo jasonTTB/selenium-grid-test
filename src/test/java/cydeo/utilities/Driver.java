@@ -62,11 +62,17 @@ public class Driver {
 
                 case "chrome":
                     ChromeOptions chromeOptions = new ChromeOptions();
+                    chromeOptions.addArguments("--headless=new");  // Use "new" headless mode for better stability
+                    chromeOptions.addArguments("--disable-gpu");
+                    chromeOptions.addArguments("--no-sandbox");
+                    chromeOptions.addArguments("--disable-dev-shm-usage");
                     chromeOptions.addArguments("--start-maximized");
+
                     driverPool.set(new ChromeDriver(chromeOptions));
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
+
 
                 case "firefox":
                     // Disable Selenium Manager on unsupported architectures (e.g., ARM64)
