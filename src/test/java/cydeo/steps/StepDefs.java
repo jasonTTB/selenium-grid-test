@@ -34,7 +34,7 @@ public class StepDefs {
         System.out.println("*** URL is OPENED THROUGH THE HOOK CLASS******");
         System.out.println("**********************************************");
         BrowserUtils.waitFor(2);
-        // Driver.getDriver().navigate().refresh(); // US Student -->
+        Driver.getDriver().navigate().refresh(); // US Student -->
         // etsy.accept.click(); //  EU Student
         BrowserUtils.waitFor(2);
 
@@ -42,23 +42,19 @@ public class StepDefs {
 
     @When("^I search for \"([^\"]*)\"$")
     public void i_search_for(String search) throws Throwable {
-
         etsy.searchBox.sendKeys(search + Keys.ENTER);
     }
 
     @Then("^I should see the results$")
     public void i_should_see_the_results() throws Throwable {
-        // Add an explicit wait to ensure the searchBox is visible before sending keys
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(etsy.searchBox));
+
         BrowserUtils.sleep(2);
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("search"));
     }
 
     @Then("^I should see more results$")
     public void i_should_see_more_results() throws Throwable {
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(etsy.searchBox));
+
         BrowserUtils.sleep(2);
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("search"));
     }

@@ -8,7 +8,6 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.File;
 import java.net.URL;
 import java.time.Duration;
 
@@ -88,44 +87,34 @@ public class Driver {
                     break;
 
                 case "firefox":
-                    // Disable Selenium Manager for manual GeckoDriver
+                    // For headless environments like Jenkins, run Firefox in headless mode
                     System.setProperty("SELENIUM_MANAGER_DISABLE", "true");
 
                     // Specify the path to the manually installed GeckoDriver
-                    String geckoDriverPath = "/usr/local/bin/geckodriver";
-                    if (!new File(geckoDriverPath).exists()) {
-                        throw new IllegalStateException("GeckoDriver not found at: " + geckoDriverPath);
-                    }
-                    System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+                    System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
 
                     // Initialize Firefox options
                     FirefoxOptions firefoxOptions = new FirefoxOptions();
-
                     // Set the Firefox binary location (ensure Firefox is installed via the package manager)
-                    String firefoxBinaryPath = "/usr/bin/firefox";
-                    if (!new File(firefoxBinaryPath).exists()) {
-                        throw new IllegalStateException("Firefox binary not found at: " + firefoxBinaryPath);
-                    }
-                    firefoxOptions.setBinary(firefoxBinaryPath);
+                    firefoxOptions.setBinary("/usr/bin/firefox");
 
                     // Set log level to TRACE for detailed logs
                     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
 
-                    // Check if headless mode is required via system property
-                    boolean isHeadless = Boolean.parseBoolean(System.getProperty("headless", "true"));
-                    if (isHeadless) {
-                        firefoxOptions.addArguments("--headless");
-                        firefoxOptions.addArguments("--window-size=1920,1080"); // Set resolution for headless
-                    }
-
-                    // Set a custom user-agent to mimic real browser usage
-                    firefoxOptions.addPreference("general.useragent.override",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101 Firefox/119.0");
+                    // Run Firefox in headless mode to prevent display issues on CI servers
+                    firefoxOptions.addArguments("--headless");
 
                     // Initialize the Firefox driver
                     driverPool.set(new FirefoxDriver(firefoxOptions));
-
                     // No need to maximize window in headless mode
+                    driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+                    break;
+
+                case "headless-chrome":
+                    ChromeOptions headlessOptions = new ChromeOptions();
+                    headlessOptions.addArguments("--headless=new");
+                    driverPool.set(new ChromeDriver(headlessOptions));
+                    driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
 
