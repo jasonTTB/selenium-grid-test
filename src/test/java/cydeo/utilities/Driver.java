@@ -99,7 +99,7 @@ public class Driver {
                     firefoxOptions.setBinary("/usr/bin/firefox");
 
                     // Set log level to TRACE for detailed logs
-                    firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
+                    //firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
 
                     // Run Firefox in headless mode to prevent display issues on CI servers
                     firefoxOptions.addArguments("--headless");
