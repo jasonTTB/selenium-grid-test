@@ -88,7 +88,7 @@ public class Driver {
 
                 case "firefox":
                     // For headless environments like Jenkins, run Firefox in headless mode
-                    System.setProperty("SELENIUM_MANAGER_DISABLE", "false");
+                    System.setProperty("SELENIUM_MANAGER_DISABLE", "true");
 
                     // Specify the path to the manually installed GeckoDriver
                     System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
