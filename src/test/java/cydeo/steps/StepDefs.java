@@ -42,14 +42,15 @@ public class StepDefs {
 
     @When("^I search for \"([^\"]*)\"$")
     public void i_search_for(String search) throws Throwable {
-        // Add an explicit wait to ensure the searchBox is visible before sending keys
-        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(etsy.searchBox));
+
         etsy.searchBox.sendKeys(search + Keys.ENTER);
     }
 
     @Then("^I should see the results$")
     public void i_should_see_the_results() throws Throwable {
+        // Add an explicit wait to ensure the searchBox is visible before sending keys
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(etsy.searchBox));
         BrowserUtils.sleep(2);
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("search"));
     }
