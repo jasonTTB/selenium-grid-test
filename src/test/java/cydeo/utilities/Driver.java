@@ -86,13 +86,11 @@ public class Driver {
 
                     break;
 
-
-
                 case "firefox":
-                    // Disable Selenium Manager on unsupported architectures (e.g., ARM64)
+                    // For headless environments like Jenkins, run Firefox in headless mode
                     System.setProperty("SELENIUM_MANAGER_DISABLE", "true");
 
-                    // Specify the path to the manually installed GeckoDriver for ARM64
+                    // Specify the path to the manually installed GeckoDriver
                     System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
 
                     // Initialize Firefox options
@@ -102,12 +100,13 @@ public class Driver {
 
                     // Set log level to TRACE for detailed logs
                     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
-                    // Start Firefox maximized
-                    firefoxOptions.addArguments("--start-maximized");
+
+                    // Run Firefox in headless mode to prevent display issues on CI servers
+                    firefoxOptions.addArguments("--headless");
 
                     // Initialize the Firefox driver
                     driverPool.set(new FirefoxDriver(firefoxOptions));
-                    driverPool.get().manage().window().maximize();
+                    // No need to maximize window in headless mode
                     driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
                     break;
 
