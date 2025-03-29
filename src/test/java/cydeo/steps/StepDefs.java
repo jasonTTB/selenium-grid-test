@@ -63,4 +63,5 @@ public class StepDefs {
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("search"));
     }
 
+
 }
