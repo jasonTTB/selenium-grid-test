@@ -57,6 +57,8 @@ public class StepDefs {
 
     @Then("^I should see more results$")
     public void i_should_see_more_results() throws Throwable {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(etsy.searchBox));
         BrowserUtils.sleep(2);
         Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("search"));
     }
